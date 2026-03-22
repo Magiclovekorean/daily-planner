@@ -1,75 +1,105 @@
-# React + TypeScript + Vite
+# Dayly Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Dayly Planner is a small React application for planning the current day from the moment you open it. It creates a fresh plan per calendar day, stores activities in `localStorage`, and keeps the agenda focused on today's schedule.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Create activities with a title, start time, and duration
+- Automatically suggest the next start time from the previous activity
+- Prevent activities from starting before the app was first opened that day
+- Persist the daily plan and completion state in `localStorage`
+- Reset the schedule automatically on a new calendar day
+- Toggle between light and dark themes
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- React 19
+- TypeScript
+- Vite
+- Vitest and Testing Library
+- ESLint
 
-Note: This will impact Vite dev & build performances.
+## Getting Started
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Bun (latest stable version recommended)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Install dependencies
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Start the development server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun run dev
 ```
+
+### Build for production
+
+```bash
+bun run build
+```
+
+### Preview the production build
+
+```bash
+bun run preview
+```
+
+## Available Scripts
+
+- `bun run dev`: start the Vite development server
+- `bun run build`: run TypeScript project builds and create the production bundle
+- `bun run lint`: run ESLint across the project
+- `bun run test`: start Vitest in watch mode
+- `bun run test:run`: run the test suite once
+- `bun run preview`: serve the production build locally
+
+## How It Works
+
+The app stores planner data in `localStorage` under a project-specific key. Each day gets its own plan keyed by date.
+
+When the app opens:
+
+1. It checks whether a plan already exists for the current date.
+2. If not, it creates a new empty plan and records the current opening time.
+3. New activities must start at or after that opening time.
+4. Activities are sorted by start time and restored on reload.
+
+This makes the planner intentionally day-scoped and browser-local, with no server dependency.
+
+## Project Structure
+
+```text
+src/
+  App.tsx         Main UI and interaction logic
+  planner.ts      Planner domain logic, validation, formatting, storage helpers
+  App.test.tsx    Integration-style UI tests
+  test/setup.ts   Vitest test setup
+public/           Static assets
+```
+
+## Testing
+
+Run the full test suite once with:
+
+```bash
+bun run test:run
+```
+
+The current tests cover:
+
+- creating a new plan and adding activities
+- validation for invalid start times
+- persistence of activities and completion state
+- rollover to a fresh plan on a new day
+- theme toggling
+- modal open and close behavior
+- next-start-time prefilling
+
+## Contributing
+
+See [Contributing.md](./Contributing.md) for contribution workflow, coding expectations, and verification steps.
